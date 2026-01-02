@@ -3,11 +3,14 @@
 namespace App\Livewire;
 
 use App\Models\Need;
+use App\Models\NeedAttachment;
 use Livewire\Component;
 use Livewire\Attributes\Validate;
+use Livewire\WithFileUploads;
 
 class NeedForm extends Component
 {
+    use WithFileUploads;
     #[Validate('required|string|max:255')]
     public $item_name = '';
 
@@ -29,11 +32,14 @@ class NeedForm extends Component
     #[Validate('nullable|string')]
     public $notes = '';
 
+    #[Validate('nullable|array|max:5')]
+    public $attachments = [];
+
     public function save()
     {
         $this->validate();
 
-        Need::create([
+        $need = Need::create([
             'item_name' => $this->item_name,
             'description' => $this->description,
             'quantity' => $this->quantity,
@@ -45,11 +51,27 @@ class NeedForm extends Component
             'status' => 'pending',
         ]);
 
+        // Handle file attachments
+        if (!empty($this->attachments)) {
+            foreach ($this->attachments as $file) {
+                $fileName = $file->getClientOriginalName();
+                $filePath = $file->store('need-attachments', 'public');
+
+                NeedAttachment::create([
+                    'need_id' => $need->id,
+                    'file_name' => $fileName,
+                    'file_path' => $filePath,
+                    'file_type' => $file->getMimeType(),
+                    'file_size' => $file->getSize(),
+                ]);
+            }
+        }
+
         $this->reset();
 
         $this->dispatch('need-saved');
 
-        session()->flash('message', 'Data kebutuhan berhasil disimpan!');
+        session()->flash('message', 'Need saved successfully!');
     }
 
     public function render()
