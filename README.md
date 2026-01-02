@@ -1,33 +1,245 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📦 FTS Stock Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> A simple and elegant needs/stock management system built with Laravel, Livewire, and Breeze authentication.
 
-## About Laravel
+[![Laravel](https://img.shields.io/badge/Laravel-11.x-red?style=flat-square&logo=laravel)](https://laravel.com)
+[![Livewire](https://img.shields.io/badge/Livewire-3.x-purple?style=flat-square&logo=livewire)](https://livewire.laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-blue?style=flat-square&logo=php)](https://php.net)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✨ Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- 🔐 **Authentication** - Simple login/register with Laravel Breeze
+- ➕ **Add Needs** - Quick form to input stock requirements
+- 📊 **Dashboard** - View all needs with real-time updates
+- 🔍 **Smart Filters** - Filter by status, month, and year
+- 🚦 **Status Workflow** - Pending → Approved → Filled
+- ✏️ **Inline Edit** - Edit filled items directly in the table
+- 🗑️ **Delete** - Remove filled items when no longer needed
+- 📥 **Excel Export** - Download filtered reports instantly
+- ⚡ **Real-time UI** - No page refresh needed (thanks to Livewire!)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🎯 Status Flow
 
-## Learning Laravel
+```mermaid
+graph LR
+    A[Pending] -->|Approve| B[Approved]
+    A -->|Reject| C[Rejected]
+    B -->|Mark Filled| D[Filled]
+    B -->|Reset| A
+    C -->|Reset| A
+    D -->|Edit/Delete| D
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+**Status Actions:**
+- **Pending**: Approve ✓ | Reject ✗
+- **Approved**: Mark as Filled ✓ | Reset ↻
+- **Rejected**: Reset ↻
+- **Filled**: Edit ✎ | Delete 🗑
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🚀 Quick Start
 
-## Laravel Sponsors
+### Prerequisites
+
+- PHP 8.2 or higher
+- Composer
+- Node.js & NPM
+- SQLite/MySQL/PostgreSQL
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Mifta24/FTS-Stock.git
+   cd FTS-Stock
+   ```
+
+2. **Install dependencies**
+   ```bash
+   composer install
+   npm install
+   ```
+
+3. **Environment setup**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Configure database**
+   
+   Edit `.env` file:
+   ```env
+   DB_CONNECTION=sqlite
+   # Or use MySQL/PostgreSQL
+   # DB_CONNECTION=mysql
+   # DB_HOST=127.0.0.1
+   # DB_PORT=3306
+   # DB_DATABASE=fts_stock
+   # DB_USERNAME=root
+   # DB_PASSWORD=
+   ```
+
+5. **Run migrations**
+   ```bash
+   php artisan migrate
+   ```
+
+6. **Seed dummy data (optional)**
+   ```bash
+   php artisan db:seed
+   ```
+   
+   This creates:
+   - Admin user: `admin@fts.com` / `password`
+   - 6 sample needs with various statuses
+
+7. **Build assets**
+   ```bash
+   npm run build
+   # Or for development
+   npm run dev
+   ```
+
+8. **Start the server**
+   ```bash
+   php artisan serve
+   ```
+
+9. **Open your browser**
+   
+   Navigate to: `http://localhost:8000`
+
+## 📱 Usage
+
+### Adding a Need
+
+1. Login to your account
+2. Click **"Add Need"** in the navigation
+3. Fill in the form:
+   - Item Name (required)
+   - Quantity & Unit (required)
+   - Estimated Price (optional)
+   - Needed Date (required)
+   - Description & Notes (optional)
+4. Click **"Save Need"**
+5. Data appears instantly in Dashboard!
+
+### Managing Needs
+
+#### Dashboard View
+- View all needs in a sortable table
+- Filter by:
+  - Status: All | Pending | Approved | Rejected | Filled
+  - Month: All months or specific month
+  - Year: Current year or previous years
+
+#### Status Actions
+- **Pending Items**: Approve or Reject
+- **Approved Items**: Mark as Filled or Reset to Pending
+- **Filled Items**: Edit details or Delete permanently
+- **Rejected Items**: Reset to Pending
+
+#### Exporting Data
+- Click **"📥 Export Excel"** button
+- Downloads Excel file with filtered data
+- Includes all item details, status, and dates
+
+### Inline Editing
+
+For items with **Filled** status:
+1. Click **"✎ Edit"** button
+2. Row changes to edit mode (blue background)
+3. Modify item details directly
+4. Click **"✓ Save"** or **"✗ Cancel"**
+
+## 🛠️ Tech Stack
+
+- **Backend**: Laravel 11.x
+- **Frontend**: Blade Templates + Livewire 3.x
+- **Styling**: Tailwind CSS
+- **Authentication**: Laravel Breeze
+- **Export**: Maatwebsite Excel
+- **Database**: SQLite/MySQL/PostgreSQL
+
+## 📦 Key Packages
+
+```json
+{
+  "laravel/framework": "^11.0",
+  "laravel/breeze": "^2.3",
+  "livewire/livewire": "^3.7",
+  "maatwebsite/excel": "^3.1"
+}
+```
+
+## 📁 Project Structure
+
+```
+FTS-Stock/
+├── app/
+│   ├── Exports/
+│   │   └── NeedsExport.php      # Excel export logic
+│   ├── Livewire/
+│   │   ├── NeedForm.php         # Add need component
+│   │   └── NeedTable.php        # Dashboard table component
+│   └── Models/
+│       └── Need.php             # Need model
+├── database/
+│   ├── migrations/
+│   │   └── *_create_needs_table.php
+│   └── seeders/
+│       └── DatabaseSeeder.php   # Dummy data
+├── resources/
+│   └── views/
+│       ├── livewire/
+│       │   ├── need-form.blade.php
+│       │   └── need-table.blade.php
+│       ├── dashboard.blade.php
+│       └── input.blade.php
+└── routes/
+    └── web.php
+```
+
+## 🎨 Screenshots
+
+### Dashboard
+![Dashboard](https://via.placeholder.com/800x400?text=Dashboard+View)
+
+### Add Need Form
+![Add Need](https://via.placeholder.com/800x400?text=Add+Need+Form)
+
+### Inline Edit
+![Edit Mode](https://via.placeholder.com/800x400?text=Inline+Edit+Mode)
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## 👤 Author
+
+**Mifta24**
+
+- GitHub: [@Mifta24](https://github.com/Mifta24)
+- Repository: [FTS-Stock](https://github.com/Mifta24/FTS-Stock)
+
+## 💡 Support
+
+If you found this project helpful, please give it a ⭐️!
+
+---
+
+<p align="center">Made with ❤️ using Laravel & Livewire</p>
+
 
 We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
