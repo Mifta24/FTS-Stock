@@ -8,7 +8,13 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $stats = [
+        'pending' => \App\Models\Need::where('status', 'pending')->count(),
+        'approved' => \App\Models\Need::where('status', 'approved')->count(),
+        'filled' => \App\Models\Need::where('status', 'filled')->count(),
+        'rejected' => \App\Models\Need::where('status', 'rejected')->count(),
+    ];
+    return view('dashboard', compact('stats'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/input', function () {
